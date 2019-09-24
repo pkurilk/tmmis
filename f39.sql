@@ -151,7 +151,32 @@ case when oms_kl_ReasonType.CODE=2.4--Паллиативная помощь
 	then 1 
 	else 0 
 	end
-	)																												as 'cnt_paliat_dom'
+	)																												as 'cnt_paliat_dom',
+----------------------------Число посещений по видам оплаты----------------------------------
+sum (
+case when oms_kl_ProfitType.CODE=1
+	then 1 
+	else 0 
+	end
+	)																												as 'cnt_oms',
+	sum (
+case when oms_kl_ProfitType.CODE=2
+	then 1 
+	else 0 
+	end
+	)																												as 'cnt_budget',
+	sum (
+case when oms_kl_ProfitType.CODE=3
+	then 1 
+	else 0 
+	end
+	)																												as 'cnt_plat',
+	sum (
+case when oms_kl_ProfitType.CODE=4
+	then 1 
+	else 0 
+	end
+	)																												as 'cnt_dms'
 																																																																								
 from hlt_tap
 left join hlt_mkab					on hlt_TAP.rf_MKABID=hlt_MKAB.MKABID
@@ -164,11 +189,5 @@ left join oms_kl_VisitPlace			on hlt_tap.rf_kl_VisitPlaceID=oms_kl_VisitPlace.kl
 where 1=1
 and hlt_tap.DateClose >= convert (date, '01.09.2019')
 and hlt_tap.DateClose <= convert (date, '30.09.2019')
-and hlt_tap.IsClosed = 1  
-and oms_kl_profittype.CODE=1
+--and hlt_tap.IsClosed = 1  
 group by ('['+hlt_LPUDoctor.PCOD+']'+hlt_LPUDoctor.FAM_V+' '+left (hlt_LPUDoctor.IM_V,1)+'. '+left(hlt_LPUDoctor.OT_V,1)+'.')
-
-
---select * from oms_kl_ReasonType
---select * from oms_kl_VisitPlace
---select * from oms_kl_ProfitType
